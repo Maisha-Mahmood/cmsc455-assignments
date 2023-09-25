@@ -4,7 +4,7 @@ import requests
 
 app = Flask(__name__)
 
-PRODUCT_SERVICE_URL = 'http://localhost:5000/'  
+PRODUCT_SERVICE_URL = 'https://product-service-ugfo.onrender.com'  
 @app.route('/cart/<int:user_id>', methods=['GET'])
 def get_cart(user_id):
     response = requests.get(f'{PRODUCT_SERVICE_URL}/products/{user_id}')
