@@ -36,4 +36,4 @@ def add_product():
         return jsonify({"message": "Invalid data. Make sure to include name, price, and quantity."}), 400
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5050)

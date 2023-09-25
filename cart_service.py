@@ -27,4 +27,4 @@ def add_to_cart(user_id, product_id):
 def remove_from_cart(user_id, product_id):
     return jsonify({'message': 'Product removed from cart'}), 200  
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port= 5055)
