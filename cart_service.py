@@ -4,7 +4,37 @@ import requests
 app = Flask(__name__)
 
 # Sample in-memory shopping cart data (replace with a database in a real application)
-carts = {}
+carts = {
+    1: [  # User with ID 1
+        {
+            "product_id": 1,
+            "product_name": "Milk",
+            "quantity": 3,
+            "total_price": 1.8  # (3 * $0.6)
+        },
+        {
+            "product_id": 2,
+            "product_name": "Eggs",
+            "quantity": 2,
+            "total_price": 0.4  # (2 * $0.2)
+        },
+    ],
+    2: [  # User with ID 2
+        {
+            "product_id": 1,
+            "product_name": "Milk",
+            "quantity": 1,
+            "total_price": 0.6  # (1 * $0.6)
+        },
+        {
+            "product_id": 3,
+            "product_name": "Bread",
+            "quantity": 2,
+            "total_price": 0.6  # (2 * $0.3)
+        },
+    ]
+}
+
 
 
 @app.route('/cart/<int:user_id>', methods=['GET'])
