@@ -9,34 +9,8 @@ app = Flask(__name__)
 PRODUCT_URL = 'https://product-service-ugfo.onrender.com'
 
 carts = {
-    1: [  
-        {
-            "product_id": 1,
-            "product_name": "Milk",
-            "quantity": 3,
-            "price": 0.6 
-        },
-        {
-            "product_id": 2,
-            "product_name": "Eggs",
-            "quantity": 2,
-            "price": 0.2 
-        },
-    ],
-    2: [  
-        {
-            "product_id": 1,
-            "product_name": "Milk",
-            "quantity": 1,
-            "price": 0.6 
-        },
-        {
-            "product_id": 3,
-            "product_name": "Bread",
-            "quantity": 2,
-            "price": 0.6 
-        },
-    ],
+    1: {1: 3},
+    2: {2: 1}
 }
 
 #Gets cart information for a specific user based on the user id
