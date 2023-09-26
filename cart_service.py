@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 PRODUCT_URL = 'https://product-service-ugfo.onrender.com'
 
-carts = {1: {1: 3}}
+carts = {1: {3}, 2: {1}}
 
 #Gets cart information for a specific user based on the user id
 @app.route('/cart/<int:user_id>', methods=['GET'])
@@ -54,6 +54,7 @@ def add_to_cart(user_id, product_id):
     else:
         return jsonify({"Error": "Product was not found"}), 404
 
+#Removes a certain product from the cart.
 @app.route('/cart/<int:user_id>/remove/<int:product_id>', methods=['POST'])
 def remove_from_cart(user_id, product_id):
     products_data = request.get_json()
