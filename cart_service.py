@@ -1,84 +1,84 @@
+# Maisha Mahmood
+# CMSC 455 - Cart Service
+
 from flask import Flask, request, jsonify
 import requests
 
 app = Flask(__name__)
 
-# Replace with the URL of your deployed Product Service
-PRODUCT_SERVICE_URL = 'https://product-service-ugfo.onrender.com'
+PRODUCT_URL = 'https://product-service-ugfo.onrender.com'
 
-# Sample in-memory shopping cart data (replace with a database in a real application)
 carts = {1: {1: 3}}
 
+#Gets cart information for a specific user based on the user id
 @app.route('/cart/<int:user_id>', methods=['GET'])
 def get_cart(user_id):
-    # Retrieve the user's shopping cart from the Product Service
-    response = requests.get(f'{PRODUCT_SERVICE_URL}/products/{user_id}')
+    response = requests.get(f'{PRODUCT_URL}/products/{user_id}')
     
     if response.status_code == 200:
         cart_contents = response.json()
         return jsonify({'user_id': user_id, 'cart': cart_contents})
     else:
-        return jsonify({'message': 'Failed to retrieve cart'}), 500
+        return jsonify({'Error': 'Failed to get cart info'}), 500
 
+#Adds a new product to the user's cart
 @app.route('/cart/<int:user_id>/add/<int:product_id>', methods=['POST'])
 def add_to_cart(user_id, product_id):
-    data = request.get_json()
+    products_data = request.get_json()
     
-    if not data or "quantity" not in data:
-        return jsonify({"message": "Invalid data. Make sure to include 'quantity' in the request body."}), 400
+    if not products_data or "quantity" not in products_data:
+        return jsonify({"Error": "Invalid data."}), 400
     
-    quantity = data["quantity"]
-    
-    # Check if the product exists in the Product Service
-    response = requests.get(f'{PRODUCT_SERVICE_URL}/products/{product_id}')
+    amount = products_data["quantity"]
+    response = requests.get(f'{PRODUCT_URL}/products/{product_id}')
     
     if response.status_code == 200:
-        product_data = response.json()
-        product_name = product_data.get("name")
-        product_price = product_data.get("price")
+        products_data = response.json()
+        products_name = products_data.get("name")
+        products_price = products_data.get("price")
         
         # Create or update the user's cart
         if user_id not in carts:
             carts[user_id] = []
         
-        cart_item = {
+        cart_products = {
             "product_id": product_id,
-            "product_name": product_name,
-            "quantity": quantity,
-            "total_price": quantity * product_price
+            "product_name": products_name,
+            "quantity": amount,
+            "total_price": amount * products_price
         }
         
-        carts[user_id].append(cart_item)
+        carts[user_id].append(cart_products)
         
-        return jsonify({"message": f"{quantity} {product_name}(s) added to the cart"}), 201
+        return jsonify({"message": f"{amount} {products_name}(s) sucessfully added to the cart"}), 201
     else:
-        return jsonify({"message": "Product not found"}), 404
+        return jsonify({"Error": "Product was not found"}), 404
 
 @app.route('/cart/<int:user_id>/remove/<int:product_id>', methods=['POST'])
 def remove_from_cart(user_id, product_id):
-    data = request.get_json()
+    products_data = request.get_json()
     
-    if not data or "quantity" not in data:
-        return jsonify({"message": "Invalid data. Make sure to include 'quantity' in the request body."}), 400
+    if not products_data or "quantity" not in products_data:
+        return jsonify({"Error": "Invalid data."}), 400
     
-    quantity_to_remove = data["quantity"]
+    amount_removing = products_data["quantity"]
     
     if user_id not in carts:
         return jsonify({"message": "Cart not found"}), 404
     
     cart = carts[user_id]
     
-    for item in cart:
-        if item["product_id"] == product_id:
-            if item["quantity"] <= quantity_to_remove:
-                cart.remove(item)
-                return jsonify({"message": f"{item['product_name']} removed from the cart"}), 200
+    for i in cart:
+        if i["product_id"] == product_id:
+            if i["quantity"] <= amount_removing:
+                cart.remove(i)
+                return jsonify({"message": f"{i['product_name']} removed from the cart"}), 200
             else:
-                item["quantity"] -= quantity_to_remove
-                item["total_price"] -= quantity_to_remove * (item["total_price"] / item["quantity"])
-                return jsonify({"message": f"{quantity_to_remove} {item['product_name']}(s) removed from the cart"}), 200
+                i["quantity"] -= amount_removing
+                i["total_price"] -= amount_removing * (i["total_price"] / i["quantity"])
+                return jsonify({"message": f"{amount_removing} {i['product_name']}(s) succesfully removed from the cart"}), 200
     
-    return jsonify({"message": "Product not found in the cart"}), 404
+    return jsonify({"Error": "Product was not found in the cart"}), 404
 
 if __name__ == '__main__':
     app.run(debug=True, port=5055)
